@@ -1,0 +1,36 @@
+{
+  "name": "crossings",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.mjs",
+  "types": "index.d.mjs",
+  "files": [
+    "**/index.mjs",
+    "**/index.d.mjs",
+    "**/types.mjs",
+    "**/types.d.mjs"
+  ],
+  "type": "module",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.30.0",
+    "@typescript-eslint/parser": "^5.30.0",
+    "eslint": "^8.18.0"
+  },
+  "scripts": {
+    "prepare": "tsc",
+    "watch": "tsc -w",
+    "test": "node test.mjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://WSDOT@dev.azure.com/WSDOT/TravelerInformation/_git/TravelerInformationCoreMap"
+  },
+  "keywords": [
+    "border",
+    "canada",
+    "crossing",
+    "times"
+  ],
+  "author": "Jeff Jacobson",
+  "license": "Unlicense"
+}
