@@ -2,6 +2,8 @@
 
 This package is for calling the API used by the [U.S. Customs and Border Protection (CBP) "Advisories and Wait Times"][Advisories and Wait Times] website.
 
+Some examples are provided below to demonstrate how to use this package.
+
 ## Web Worker (`CrossingsWorker.ts`)
 
 This file defines a [Web Worker][Using Web Workers] that will call the API periodically.
