@@ -1,18 +1,58 @@
-# Calling API to get border crossing times
+# US Border Crossings
 
-```javascript
-var myHeaders = new Headers();
-myHeaders.append("Content-Type", "text/json");
-myHeaders.append("Cookie", "TS0152f920=01ff0b0860272a1169dbb8461d1b5e743fc1ce61fbe610bd6c1051155a9d4827c0e7c87dad301285fba85c737dc30bf15b99a26b8c");
+## Web Worker (`CrossingsWorker.ts`)
 
-var requestOptions = {
-  method: 'GET',
-  headers: myHeaders,
-  redirect: 'follow'
+```typescript
+/**
+ * Web worker that calls the US Border Crossing times API
+ * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers}
+ * @module
+ */
+/// <reference lib="webworker"/>
+
+import getCrossings from "crossings/index.mjs";
+
+let counter = 0;
+
+const intervalInMilliseconds = 5 * 60 * 1_000;
+
+async function callGetCrossings() {
+    counter ++;
+    try {
+        const crossings = await getCrossings();
+        const canadianCrossings = crossings.filter(c => c.border === "Canadian Border");
+        postMessage({callCount: counter, crossings: canadianCrossings});
+    } catch (err) {
+        postMessage({ type: "Crossing Error", err });
+    }
+}
+
+callGetCrossings();
+
+setInterval(async () => {
+    await callGetCrossings();
+
+}, intervalInMilliseconds);
+```
+
+## Script calling worker
+
+```typescript
+import { BorderCrossing } from "crossings/types.mjs";
+
+//#region Setup border web worker
+const borderWorker = new Worker(new URL("./CrossingsWorker.ts", import.meta.url));
+
+type CrossingEvent = {
+    callCount: number;
+    crossings: BorderCrossing[];
 };
 
-fetch("https://bwt.cbp.gov/api/bwtnew", requestOptions)
-  .then(response => response.text())
-  .then(result => console.log(result))
-  .catch(error => console.log('error', error));
+borderWorker.addEventListener("message", (ev: MessageEvent<CrossingEvent>) => {
+    console.log("got border crossings from web worker", ev.data);
+});
+borderWorker.addEventListener("error", (errorEvent) => {
+    console.error("border crossings worker: error", errorEvent);
+})
+//#endregion
 ```
