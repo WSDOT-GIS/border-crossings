@@ -5,7 +5,10 @@
  * @see {@link https://www.cbp.gov}
  */
 
+import FormatError from "./FormatError.mjs";
 import { BorderCrossing } from "./types.mjs";
+
+export { FormatError };
 
 const defaultBwtWebsiteUrl = "https://bwt.cbp.gov";
 const defaultApiUrl = `${defaultBwtWebsiteUrl}/api`;
@@ -18,6 +21,82 @@ export const CrossingTypes = {
   Commercial: "COV",
   Pedestrian: "PED"
 } as const;
+
+type IdPartStrings = [prefix: string, portOfEntryId: string, suffix: string];
+type IdPartIntegers = [prefix: number, portOfEntryId: number, suffix: number];
+type IdParts = IdPartStrings | IdPartIntegers;
+
+/**
+ * Verifies that the input ID consists of between seven and eight digits.
+ * @param id A Border Crossings Wait-times (BWT) ID.
+ * @param assumeWaIfTooShort If the input string is only six digits long,
+ * if this value is true then the WA prefix of "02" will be added to the 
+ * beginning of the input string.
+ * @returns Returns the input string, 
+ * padded to eight digits if the input only had seven.
+ * @throws {FormatError} Thrown if the input string:
+ * - !assumeWaIfTooShort: does not consist between seven and eight digits.
+ * - assumeWaIfTooShort: does not consist of between six and eight digits.
+ */
+function verifyStringInput(id: string, assumeWaIfTooShort?: boolean): string {
+  let expectedFormat = /^\d{6,8}$/; // /^\d{7,8}$/;
+  if (!expectedFormat.test(id)) {
+    throw new FormatError(id, expectedFormat);
+  }
+  // If we know it's WA and the prefix isn't there, add it.
+  if (id.length === 6 && assumeWaIfTooShort) {
+      id = `02${id}`;
+  }
+  // Set expected format to be 7 or 8 digits.
+  expectedFormat = /^\d{7,8}$/;
+  if (!expectedFormat) {
+    throw new FormatError(id, expectedFormat);
+  }
+  // Pad to eight digits if necessary.
+  if (id.length === 7) {
+    id = `0${id}`;
+  }
+  return id;
+}
+
+/**
+ * Splits an ID into its three component parts.
+ * @param bwtId Full border wat times ID as either a string or integer
+ * @param outputType Optionally specify output type. 
+ * If omitted, the output will be an array of values of the same type as the input.
+ * @returns An array of three elements: either all string or all number type.
+ * @throws {FormatError} Thrown if the input string does not
+ * consist between seven and eight digits.
+ */
+export function getIdParts(bwtId: string, outputType?: "string" | "number", assumeWaIfTooShort?: boolean): IdParts {
+
+  if (typeof bwtId === "string") {
+    bwtId = verifyStringInput(bwtId);
+    const prefix = bwtId.substring(0, 2);
+    const portOfEntryId = bwtId.substring(2, 6);
+    const suffix = bwtId.substring(6);
+    const parts = [prefix, portOfEntryId, suffix];
+    return outputType !== "string" ?
+      parts.map(parseInt) as IdPartIntegers
+      : parts as [string, string, string] as IdPartStrings;
+  }
+  else if (typeof bwtId === "number") {
+    const suffix = bwtId % 100;
+    const portOfEntryId = ((bwtId - suffix) / 100) % 10_000;
+    const prefix = (((bwtId - suffix) / 100) - portOfEntryId) / 10_000;
+    if (outputType !== "string") {
+      return [prefix, portOfEntryId, suffix];
+    } else {
+      const sPrefix = prefix.toLocaleString("en-US", { minimumFractionDigits: 2 });
+      const sPortOfEntryId = portOfEntryId.toLocaleString("en-US", { minimumFractionDigits: 4 });
+      const sSuffix = suffix.toLocaleString("en-US", { minimumIntegerDigits: 2 });
+      return [sPrefix, sPortOfEntryId, sSuffix];
+    }
+  }
+  else {
+    throw new TypeError("Unsupported input");
+  }
+}
 
 /**
  * Generates a Border Wait Times page URL for the given Port of Entry and Crossing Type webpage.
@@ -87,7 +166,7 @@ function customizeBorderCrossingJson(this: any, key: string, value: any): any {
  * @param url Override default URL for US Government border crossings.
  * @returns An array of border crossing objects.
  */
-export async function getCurrentBorderCrossingInfo (url = defaultUrl) {
+export async function getCurrentBorderCrossingInfo(url = defaultUrl) {
   const myHeaders = new Headers();
   myHeaders.append("Content-Type", "text/json");
 

@@ -86,15 +86,15 @@ borderWorker.addEventListener("error", (errorEvent) => {
 
 Source: <https://www.cbp.gov/contact/ports/wa>
 
-| ID   | Port Name                      | Location Address                                                                    | Field Operation Office |
-|------|--------------------------------|-------------------------------------------------------------------------------------|------------------------|
-| 3010 | Anacortes                      | 1019 Q Ave., Suite F, Anacortes, WA 98221, United States                          | Seattle                |
-| 3005 | Bellingham                     | 4241 Mitchell Way #13, Bellingham, WA 98250, United States                       | Seattle                |
-| 3004 | Blaine, Washington             | 9901 Pacific Highway, Blaine, WA 98230, United States                            | Seattle                |
-| 3014 | Friday Harbor                  | 100 South First Street, Friday Harbor, WA 98250, United States                 | Seattle                |
-| 3023 | Kenneth G Ward Port of Entry   | Guide Meridian St., Lynden, WA 98264, United States, 1450 Terminal Way            | Seattle                |
-| 2905 | Longview, Washington           | 1450 Terminal Way, Longview, WA 98632, United States, 33643 Hwy 97                | Portland               |
-| 3019 | Oroville, WA, Washington       | 33643 Hwy 97, Oroville, WA 98844, United States, 17801 Pacific Highway S          | Seattle                |
-| 3001 | Seattle, Washington            | 17801 Pacific Highway S, Seattle, WA 98158-1249, United States, 103 Cherry Street | Seattle                |
-| 3009 | Sumas, Washington              | 103 Cherry Street, Sumas, WA 98295, United States, 4813 Pacific Highway East      |                        |
-| 3002 | Tacoma, Washington, Washington | 4813 Pacific Highway East, Fife, WA 98424, United States, Seattle                | Seattle                       |
+| ID   | Port Name                      | Location Address                                               | Field Operation Office |
+|------|--------------------------------|----------------------------------------------------------------|------------------------|
+| 3010 | Anacortes                      | 1019 Q Ave., Suite F, Anacortes, WA 98221, United States       | Seattle                |
+| 3005 | Bellingham                     | 4241 Mitchell Way #13, Bellingham, WA 98250, United States     | Seattle                |
+| 3004 | Blaine, Washington             | 9901 Pacific Highway, Blaine, WA 98230, United States          | Seattle                |
+| 3014 | Friday Harbor                  | 100 South First Street, Friday Harbor, WA 98250, United States | Seattle                |
+| 3023 | Kenneth G Ward Port of Entry   | Guide Meridian St., Lynden, WA 98264, United States            | Seattle                |
+| 2905 | Longview, Washington           | 1450 Terminal Way, Longview, WA 98632, United States           | Portland               |
+| 3019 | Oroville, WA, Washington       | 33643 Hwy 97, Oroville, WA 98844, United States                | Seattle                |
+| 3001 | Seattle, Washington            | 17801 Pacific Highway S, Seattle, WA 98158-1249, United States | Seattle                |
+| 3009 | Sumas, Washington              | 103 Cherry Street, Sumas, WA 98295, United States              |                        |
+| 3002 | Tacoma, Washington, Washington | 4813 Pacific Highway East, Fife, WA 98424, United States       | Seattle                |

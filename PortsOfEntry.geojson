@@ -1,0 +1,185 @@
+{
+    "type" : "FeatureCollection", 
+    "features" : [
+      {
+        "type" : "Feature", 
+        "id" : 6, 
+        "geometry" : 
+        {
+          "type" : "Point", 
+          "coordinates" : [
+            -122.952181404759, 46.1073543036665
+          ]
+        }, 
+        "properties" : {
+          "ID" : "2905", 
+          "Port_Name" : "Longview, Washington - 2905", 
+          "Location_Address" : "1450 Terminal Way, Longview, WA 98632, United States", 
+          "Field_Operation_Office" : "Portland", 
+          "ObjectId" : 6
+        }
+      }, 
+      {
+        "type" : "Feature", 
+        "id" : 8, 
+        "geometry" : 
+        {
+          "type" : "Point", 
+          "coordinates" : [
+            -122.296176734961, 47.4405358749433
+          ]
+        }, 
+        "properties" : {
+          "ID" : "3001", 
+          "Port_Name" : "Seattle, Washington - 3001", 
+          "Location_Address" : "17801 Pacific Highway S, Seattle, WA 98158-1249, United States", 
+          "Field_Operation_Office" : "Seattle", 
+          "ObjectId" : 8
+        }
+      }, 
+      {
+        "type" : "Feature", 
+        "id" : 10, 
+        "geometry" : 
+        {
+          "type" : "Point", 
+          "coordinates" : [
+            -122.362949979673, 47.2441079966502
+          ]
+        }, 
+        "properties" : {
+          "ID" : "3002", 
+          "Port_Name" : "Tacoma, Washington, Washington - 3002", 
+          "Location_Address" : "4813 Pacific Highway East, Fife, WA 98424, United States", 
+          "Field_Operation_Office" : "Seattle", 
+          "ObjectId" : 10
+        }
+      }, 
+      {
+        "type" : "Feature", 
+        "id" : 3, 
+        "geometry" : 
+        {
+          "type" : "Point", 
+          "coordinates" : [
+            -122.736715973422, 49.0015659851531
+          ]
+        }, 
+        "properties" : {
+          "ID" : "3004", 
+          "Port_Name" : "Blaine, Washington - 3004", 
+          "Location_Address" : "9901 Pacific Highway, Blaine, WA 98230, United States", 
+          "Field_Operation_Office" : "Seattle", 
+          "ObjectId" : 3
+        }
+      }, 
+      {
+        "type" : "Feature", 
+        "id" : 2, 
+        "geometry" : 
+        {
+          "type" : "Point", 
+          "coordinates" : [
+            -122.53200399767, 48.7947379980151
+          ]
+        }, 
+        "properties" : {
+          "ID" : "3005", 
+          "Port_Name" : "Bellingham - 3005", 
+          "Location_Address" : "4241 Mitchell Way #13, Bellingham, WA 98250, United States", 
+          "Field_Operation_Office" : "Seattle", 
+          "ObjectId" : 2
+        }
+      }, 
+      {
+        "type" : "Feature", 
+        "id" : 9, 
+        "geometry" : 
+        {
+          "type" : "Point", 
+          "coordinates" : [
+            -122.265627279733, 49.0020465467163
+          ]
+        }, 
+        "properties" : {
+          "ID" : "3009", 
+          "Port_Name" : "Sumas, Washington - 3009", 
+          "Location_Address" : "103 Cherry Street, Sumas, WA 98295, United States", 
+          "Field_Operation_Office" : null, 
+          "ObjectId" : 9
+        }
+      }, 
+      {
+        "type" : "Feature", 
+        "id" : 1, 
+        "geometry" : 
+        {
+          "type" : "Point", 
+          "coordinates" : [
+            -122.60993398853, 48.5137989830974
+          ]
+        }, 
+        "properties" : {
+          "ID" : "3010", 
+          "Port_Name" : "Anacortes - 3010", 
+          "Location_Address" : "1019 Q Ave., Suite F, Anacortes, WA 98221, United States", 
+          "Field_Operation_Office" : "Seattle", 
+          "ObjectId" : 1
+        }
+      }, 
+      {
+        "type" : "Feature", 
+        "id" : 4, 
+        "geometry" : 
+        {
+          "type" : "Point", 
+          "coordinates" : [
+            -123.015465970201, 48.5348549944032
+          ]
+        }, 
+        "properties" : {
+          "ID" : "3014", 
+          "Port_Name" : "Friday Harbor - 3014", 
+          "Location_Address" : "100 South First Street, Friday Harbor, WA 98250, United States", 
+          "Field_Operation_Office" : "Seattle", 
+          "ObjectId" : 4
+        }
+      }, 
+      {
+        "type" : "Feature", 
+        "id" : 7, 
+        "geometry" : 
+        {
+          "type" : "Point", 
+          "coordinates" : [
+            -119.462998984573, 48.9995899930977
+          ]
+        }, 
+        "properties" : {
+          "ID" : "3019", 
+          "Port_Name" : "Oroville, WA, Washington - 3019", 
+          "Location_Address" : "33643 Hwy 97, Oroville, WA 98844, United States", 
+          "Field_Operation_Office" : "Seattle", 
+          "ObjectId" : 7
+        }
+      }, 
+      {
+        "type" : "Feature", 
+        "id" : 5, 
+        "geometry" : 
+        {
+          "type" : "Point", 
+          "coordinates" : [
+            -122.485983688347, 48.8771421287285
+          ]
+        }, 
+        "properties" : {
+          "ID" : "3023", 
+          "Port_Name" : "Kenneth G Ward Port of Entry", 
+          "Location_Address" : "Guide Meridian St., Lynden, WA 98264, United States", 
+          "Field_Operation_Office" : "Seattle", 
+          "ObjectId" : 5
+        }
+      }
+    ]
+  }

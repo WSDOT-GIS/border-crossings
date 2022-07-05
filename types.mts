@@ -9,7 +9,7 @@ export type OperationalStatus = CanBeNA<string> | "no delay" | "delay" | "Update
 type Nullable<T> = T | null;
 type HourNumbers = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11;
 type Times = `${HourNumbers} ${"a" | "p"}m` | "Midnight";
-export type Hours = '24 hrs/day' | `${Times}-${Times}`; 
+export type Hours = '24 hrs/day' | `${Times}-${Times}`;
 export type PortName = "Alexandria Bay" | "Alexandria Bay, NY" | "Blaine" | "Buffalo/Niagara Falls" | "Calais" | "Champlain" | "Derby Line" | "Detroit" | "Highgate Springs" | "Houlton" | "International Falls" | "Jackman" | "Lynden" | "Madawaska" | "Massena" | "Norton" | "Ogdensburg" | "Pembina" | "Port Huron" | "Sault Ste. Marie" | "Sumas" | "Sweetgrass" | string;
 export type CrossingName = "Ambassador Bridge" | "Bluewater Bridge" | "Derby Line I-91" | "Ferry Point" | "International Avenue" | "International Bridge - SSM" | "Lewiston Bridge" | "Milltown" | "Pacific Highway" | "Peace Arch" | "Peace Bridge" | "Point Roberts" | "Rainbow Bridge" | "Thousand Islands Bridge" | "Whirlpool Bridge" | "Windsor Tunnel" | string | null;
 
@@ -135,9 +135,40 @@ interface BorderCrossing extends BorderCrossingCommon {
     automation_enabled: boolean;
 }
 
-export type { 
-    BorderCrossingRaw, CommercialVehicleLanesRaw, LanesRaw, 
+
+
+interface PortCrossing {
+    /** 
+     * Border wait time ID - A string containing eight-digits
+     * e.g. "04070801" 
+     */
+    bwtId: string;
+    /** e.g. "C" or "M" */
+    border: "C" | "M";
+    /** e.g. "Alexandria Bay" */
+    portName: string;
+    /** e.g. "Thousand Islands Bridge" */
+    crossingName: string;
+    /** e.g. "Alexandria Bay - Thousand Islands Bridge" */
+    portCrossingName: number;
+    /** Maximum number of commercial lanes */
+    covMaximumLanes: number;
+    /** Maximum number of passenger lanes */
+    povMaximumLanes: number;
+    /** Maximum number of pedestrian lanes */
+    pedMaximumLanes: number;
+    /** A unique identifier */
+    id: number;
+}
+
+interface PortCrossingsResponse {
+    portCrossings: [PortCrossing]
+}
+
+export type {
+    BorderCrossingRaw, CommercialVehicleLanesRaw, LanesRaw,
     PassengerVehicleLanesRaw, PedestrianLanesRaw,
-    BorderCrossing, CommercialVehicleLanes, Lanes, 
-    PassengerVehicleLanes, PedestrianLanes 
+    BorderCrossing, CommercialVehicleLanes, Lanes,
+    PassengerVehicleLanes, PedestrianLanes,
+    PortCrossingsResponse, PortCrossing
 }
