@@ -1,6 +1,33 @@
+/**
+ * This module is for calling the API used by the U.S. Customs and Border Protection (CBP) "Advisories and Wait Times" website.
+ * @module
+ * @see {@link https://www.cbp.gov/travel/advisories-wait-times}
+ * @see {@link https://www.cbp.gov}
+ */
+
 import { BorderCrossing } from "./types.mjs";
 
-const defaultUrl = "https://bwt.cbp.gov/api/bwtnew";
+const defaultBwtWebsiteUrl = "https://bwt.cbp.gov";
+const defaultApiUrl = `${defaultBwtWebsiteUrl}/api`;
+const defaultUrl = `${defaultApiUrl}/bwtnew`;
+
+export const CrossingTypes = {
+  Passenger: "POV",
+  Commercial: "COV",
+  Pedestrian: "PED"
+} as const;
+
+/**
+ * Generates a Border Wait Times page URL for the given Port of Entry and Crossing Type webpage.
+ * @param portOfEntryId Identifier for a Port of Entry.
+ * @param crossingType Specifies a crossing type. (Pedestrian is not used in WA.)
+ * @param bwtWebsiteUrl Override the base URL of https://bwt.cbp.gov.
+ * @returns A URL for a Border Wait Times page.
+ */
+export function createWaitTimesPageUrl(portOfEntryId: string, crossingType: typeof CrossingTypes, bwtWebsiteUrl: string = defaultBwtWebsiteUrl) {
+  // Remove trailing slash from bwtWebsiteUrl if present, then join parts sparated by /.
+  return [bwtWebsiteUrl.replace(/\/$/g, ""), "details", portOfEntryId, crossingType].join("/");
+}
 
 /**
  * Parses a string into a date
