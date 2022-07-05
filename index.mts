@@ -11,6 +11,8 @@ const defaultBwtWebsiteUrl = "https://bwt.cbp.gov";
 const defaultApiUrl = `${defaultBwtWebsiteUrl}/api`;
 const defaultUrl = `${defaultApiUrl}/bwtnew`;
 
+type CrossingType = "POV" | "COV" | "PED";
+
 export const CrossingTypes = {
   Passenger: "POV",
   Commercial: "COV",
@@ -24,7 +26,7 @@ export const CrossingTypes = {
  * @param bwtWebsiteUrl Override the base URL of https://bwt.cbp.gov.
  * @returns A URL for a Border Wait Times page.
  */
-export function createWaitTimesPageUrl(portOfEntryId: string, crossingType: typeof CrossingTypes, bwtWebsiteUrl: string = defaultBwtWebsiteUrl) {
+export function createWaitTimesPageUrl(portOfEntryId: string, crossingType: CrossingType, bwtWebsiteUrl: string = defaultBwtWebsiteUrl) {
   // Remove trailing slash from bwtWebsiteUrl if present, then join parts sparated by /.
   return [bwtWebsiteUrl.replace(/\/$/g, ""), "details", portOfEntryId, crossingType].join("/");
 }
@@ -85,7 +87,7 @@ function customizeBorderCrossingJson(this: any, key: string, value: any): any {
  * @param url Override default URL for US Government border crossings.
  * @returns An array of border crossing objects.
  */
-export default async function (url = defaultUrl) {
+export async function getCurrentBorderCrossingInfo (url = defaultUrl) {
   const myHeaders = new Headers();
   myHeaders.append("Content-Type", "text/json");
 

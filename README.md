@@ -16,13 +16,10 @@ This file defines a [Web Worker][Using Web Workers] that will call the API perio
  */
 /// <reference lib="webworker"/>
 
-import getCrossings from "crossings/index.mjs";
+import { getCurrentBorderCrossingInfo } from "crossings/index.mjs";
 
 // This will control how often the data from the service is refreshed.
 const intervalInMilliseconds = 5 * 60 * 1_000;
-
-// API URL
-const url = "https://bwt.cbp.gov/api/bwtnew"
 
 // Initialize a counter to track how many times the API has been called.
 let counter = 0;
@@ -34,10 +31,7 @@ let counter = 0;
 async function callGetCrossings() {
     counter ++;
     try {
-        // The function actually will default to this URL if this parameter
-        // is omitted. Including in this example to show how it could be
-        // overridden if necessary.
-        const crossings = await getCrossings(url);
+        const crossings = await getCurrentBorderCrossingInfo();
         // Filter to only return the Canadian border crossings
         // as WA only shares a border with Canada and not Mexico.
         const canadianCrossings = crossings.filter(c => c.border === "Canadian Border");
