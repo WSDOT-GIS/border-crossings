@@ -21,7 +21,10 @@
   "scripts": {
     "prepare": "tsc",
     "watch": "tsc -w",
-    "test": "node FormatTest.mjs && node test.mjs"
+    "test": "node run test:format && node run test:us && node run test:canada",
+    "test:us": "node test.mjs",
+    "test:canada": "node Canada.Test.mjs",
+    "test:format": "node FormatTest.mjs"
   },
   "repository": {
     "type": "git",
