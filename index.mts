@@ -180,3 +180,17 @@ export async function getCurrentBorderCrossingInfo(url = defaultUrl) {
 
   return output;
 }
+
+/**
+ * Enumerates through a collection of BorderCrossings, 
+ * optionally filtering out non-WA items.
+ * @param crossings A collection of {@link: BorderCrossing} objects.
+ * @param waOnly Set to true to omit non-WA items.
+ */
+export function* enumerateBorderCrossingInfos(crossings: Iterable<BorderCrossing>, waOnly = true) {
+  for (const crossing of crossings) {
+    if (!waOnly || crossing.port_number.startsWith("30")) {
+      yield crossing;
+    }
+  }
+}
