@@ -161,7 +161,11 @@ interface PortCrossing {
     id: number;
 }
 
+/**
+ * The response from the port crossings API endpoint.
+ */
 interface PortCrossingsResponse {
+    /** An array of PortCrossing objects. */
     portCrossings: [PortCrossing]
 }
 
