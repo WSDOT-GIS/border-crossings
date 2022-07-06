@@ -7,6 +7,7 @@
 
 import FormatError from "./FormatError.mjs";
 import { BorderCrossing } from "./types.mjs";
+export { getCanadaBorderInfo } from "./Canada.mjs"
 
 export { FormatError };
 
@@ -22,9 +23,14 @@ export const CrossingTypes = {
   Pedestrian: "PED"
 } as const;
 
-type IdPartStrings = [prefix: string, portOfEntryId: string, suffix: string];
-type IdPartIntegers = [prefix: number, portOfEntryId: number, suffix: number];
-type IdParts = IdPartStrings | IdPartIntegers;
+export const waPorts = [3010, 3005, 3004, 3014, 3023, 2905, 3019, 3001, 3009, 3002];
+export const waPortsRe = new RegExp(`(?<prefix>\\d{2})(?<poe>${
+  waPorts.map(p => `(?:${p})`).join("|")
+})(?<suffix>\\d{2})`);
+
+export type IdPartStrings = [prefix: string, portOfEntryId: string, suffix: string];
+export type IdPartIntegers = [prefix: number, portOfEntryId: number, suffix: number];
+export type IdParts = IdPartStrings | IdPartIntegers;
 
 /**
  * Verifies that the input ID consists of between seven and eight digits.
@@ -45,7 +51,7 @@ function verifyStringInput(id: string, assumeWaIfTooShort?: boolean): string {
   }
   // If we know it's WA and the prefix isn't there, add it.
   if (id.length === 6 && assumeWaIfTooShort) {
-      id = `02${id}`;
+    id = `02${id}`;
   }
   // Set expected format to be 7 or 8 digits.
   expectedFormat = /^\d{7,8}$/;
@@ -68,16 +74,22 @@ function verifyStringInput(id: string, assumeWaIfTooShort?: boolean): string {
  * @throws {FormatError} Thrown if the input string does not
  * consist between seven and eight digits.
  */
-export function getIdParts(bwtId: string, outputType?: "string" | "number", assumeWaIfTooShort?: boolean): IdParts {
+export function getIdParts(bwtId: string, outputType?: "string", assumeWaIfTooShort?: boolean): IdPartStrings
+export function getIdParts(bwtId: number, outputType?: "number", assumeWaIfTooShort?: boolean): IdPartIntegers
+export function getIdParts(bwtId: string, outputType: "number", assumeWaIfTooShort?: boolean): IdPartIntegers
+export function getIdParts(bwtId: number, outputType: "string", assumeWaIfTooShort?: boolean): IdPartStrings
+export function getIdParts(bwtId: string | number, outputType?: "string" | "number", assumeWaIfTooShort?: boolean) {
 
   if (typeof bwtId === "string") {
-    bwtId = verifyStringInput(bwtId);
+    bwtId = verifyStringInput(bwtId, assumeWaIfTooShort);
     const prefix = bwtId.substring(0, 2);
     const portOfEntryId = bwtId.substring(2, 6);
     const suffix = bwtId.substring(6);
     const parts = [prefix, portOfEntryId, suffix];
-    return outputType !== "string" ?
-      parts.map(parseInt) as IdPartIntegers
+    return outputType === "number" ?
+      parts.map(part => {
+        return parseInt(part.replace(/^0{1,}/, ""), 10);
+      }) as IdPartIntegers
       : parts as [string, string, string] as IdPartStrings;
   }
   else if (typeof bwtId === "number") {
