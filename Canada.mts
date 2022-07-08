@@ -28,10 +28,38 @@ function getTimeZone(dateTime: string) {
     return match?.at(0)?.toUpperCase() as TimeZone || null;
 }
 
-function convertTableToObjects(markup: string) {
-    const parser = new DOMParser();
-    const document = parser.parseFromString(markup, "text/html");
-    const table = document.querySelector<HTMLTableElement>("#bwttaf");
+function extractDataFromCell(cell: HTMLTableCellElement, cellId: number) {
+    if (cellId === 0) {
+        return (Array.from(cell.children, (element) => element.textContent).filter(e => e !== null) as string[]).join("\n");
+    }
+    if (cellId === 3) {
+        const timeElement = cell.querySelector("time");
+        const timeString = timeElement?.textContent;
+        const timeZone = timeString ? getTimeZone(timeString) : null;
+        return timeElement ? [new Date(timeElement?.dateTime), timeZone] : null;
+    }
+    return cell.textContent as FlowValue;
+}
+
+/**
+ * Finds the table and extracts its rows into objects.
+ * @param markup HTML markup string.
+ * @returns 
+ */
+export function convertTableToObjects(markup: string | Document | HTMLTableElement) {
+    let table: HTMLTableElement | null;
+    if (markup instanceof HTMLTableElement) {
+        table = markup;
+    } else {
+        let document: Document;
+        if (typeof markup === "string") {
+            const parser = new DOMParser();
+            document = parser.parseFromString(markup, "text/html");
+        } else {
+            document = markup;
+        }
+        table = document.querySelector<HTMLTableElement>("#bwttaf");
+    }
     if (!table) {
         throw Error("Could not find table in page");
     }
@@ -49,18 +77,7 @@ function convertTableToObjects(markup: string) {
 
             const [
                 cbsaOffice, commercialFlow, travellersFlow, updated, timeZone
-            ] = Array.from(row.cells, (cell, cellId) => {
-                if (cellId === 0) {
-                    return (Array.from(cell.children, (element) => element.textContent).filter(e => e !== null) as string[]).join("\n");
-                }
-                if (cellId === 3) {
-                    const timeElement = cell.querySelector("time");
-                    const timeString = timeElement?.textContent;
-                    const timeZone = timeString ? getTimeZone(timeString) : null;
-                    return timeElement ? [new Date(timeElement?.dateTime), timeZone] : null;
-                }
-                return cell.textContent as FlowValue;
-            }).flat() as ValueArray;
+            ] = Array.from(row.cells, extractDataFromCell).flat() as ValueArray;
 
             // skip all rows that are not in the Pacific time zone.
             if (!timeZone || timeZone[0] !== "P" || !updated) {
@@ -80,6 +97,8 @@ function convertTableToObjects(markup: string) {
 
     return output;
 }
+
+
 
 /**
  * Gets Canadian Border Crossing Times from Canadan government website.
