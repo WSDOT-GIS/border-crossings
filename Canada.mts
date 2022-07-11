@@ -4,14 +4,18 @@
  * @module
  */
 
+import { load } from "cheerio";
+import type { DataNode } from "domhandler";
+
 const url = new URL("https://www.cbsa-asfc.gc.ca/bwt-taf/menu-eng.html");
 
-type NonZeroDigit = "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9";
+type PluralDigit = | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9";
+type NonZeroDigit = "1" | PluralDigit;
 type Digit = "0" | NonZeroDigit;
 
 type DoubleDigit = `${NonZeroDigit}${Digit}`;
 
-type FlowValue = "Not Applicable" | "No Delay" | `${NonZeroDigit | DoubleDigit} minutes`;
+type FlowValue = "Not Applicable" | "No Delay" | "1 minute" | `${PluralDigit | DoubleDigit} minutes`;
 
 interface CanadaBorderCrossingTimes {
     CbsaOffice: string;
@@ -98,6 +102,70 @@ export function convertTableToObjects(markup: string | Document | HTMLTableEleme
     return output;
 }
 
+/**
+ * Finds the table and extracts its rows into objects.
+ * @param markup HTML markup string.
+ * @returns 
+ */
+export function convertTableToObjectsCheerio(markup: string): CanadaBorderCrossingTimes[] {
+    const document = load(markup, undefined, true);
+    const rows = document("body > main > table#bwttaf > tbody > tr");
+
+    const output = new Array<CanadaBorderCrossingTimes>();
+    const intRe = /^\d+$/;
+    for (const rowProp in rows) {
+        if (!intRe.test(rowProp)) continue;
+        // console.log(`row ${rowProp}`);
+        const row = rows[rowProp];
+        // console.log("row", row);
+        const cellValues = new Array<string | [Date, string]>;
+        for (const cellProp in row.children) {
+            if (!intRe.test(cellProp)) continue;
+            const cellId = parseInt(cellProp);
+            const cell = row.children[cellProp];
+            // console.log(cellProp, cell);
+            if ("children" in cell) {
+                if (cellId === 3) {
+                    const timeElement = cell.children[0] as unknown as Element;
+                    // Date/time text
+                    const dateTimeText = (timeElement.children[0] as unknown as DataNode).data;
+                    const timeZone = getTimeZone(dateTimeText);
+                    // Parse the date
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    const dtString = (timeElement as any).attribs.datetime;
+                    const date = dtString ? new Date(dtString) : new Date(0);
+                    cellValues.push([date, timeZone]);
+
+                } else {
+                    const cellText = cell.children.filter(c => c.type === "text").map(c => (c as DataNode).data).join("\n");
+                    cellValues.push(cellText);
+                }
+            }
+        }
+
+        const [cbsaOffice, commercialFlow, travellersFlow, dtArray] = cellValues as [string, string, string, [Date, string]];
+        if (dtArray[1][0] !== "P") {
+            continue;
+        }
+        const value: CanadaBorderCrossingTimes = {
+            CbsaOffice: cbsaOffice,
+            CommercialFlow: commercialFlow,
+            TravellersFlow: travellersFlow,
+            Updated: dtArray[0]
+        }
+
+        output.push(value);
+    }
+    return output;
+}
+
+export function parseCanadataBorderInfo(markup: string) {
+    if (typeof DOMParser !== "undefined") {
+        return convertTableToObjects(markup);
+    } else {
+        return convertTableToObjectsCheerio(markup);
+    }
+}
 
 
 /**
@@ -108,7 +176,9 @@ export function convertTableToObjects(markup: string | Document | HTMLTableEleme
 export async function getCanadaBorderInfo() {
     const canPageResponse = await fetch(url);
     const markup = await canPageResponse.text();
-    return convertTableToObjects(markup);
+    return parseCanadataBorderInfo(markup);
 }
+
+
 
 export default getCanadaBorderInfo;
