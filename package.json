@@ -22,7 +22,7 @@
   "scripts": {
     "prepare": "tsc",
     "watch": "tsc -w",
-    "test": "node run test:format && node run test:us && node run test:canada",
+    "test": "npm run test:format && npm run test:us && npm run test:canada",
     "test:us": "node test.mjs",
     "test:canada": "node Canada.Test.mjs",
     "test:format": "node FormatTest.mjs"
