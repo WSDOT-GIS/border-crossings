@@ -1,30 +1,59 @@
 /**
  * This module is for retrieving Canadian border crossing times 
- * (Canada into US) from the Canadian government website.
- * @module
+ * (Canada into US) from the 
+ * {@link https://www.cbsa-asfc.gc.ca/bwt-taf/menu-eng.html | Canada Border Services Agency (CBSA) website, "Border wait times: United States to Canada"}.
+ * @see {@link https://www.cbsa-asfc.gc.ca/menu-eng.html | Canada Border Services Agency (CBSA)}
  */
 
 import { load } from "cheerio";
 import type { DataNode } from "domhandler";
 
-const url = new URL("https://www.cbsa-asfc.gc.ca/bwt-taf/menu-eng.html");
+/**
+ * Default URL for Canadian border wait times website.
+ */
+export const defaultUrl = new URL("https://www.cbsa-asfc.gc.ca/bwt-taf/menu-eng.html");
 
+/** Digits where type unit will be plural (e.g., `"minutes"`). */
 type PluralDigit = | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9";
+/** Digits that are not `"0"`. */
 type NonZeroDigit = "1" | PluralDigit;
+/** Any digit, 0 through 9 */
 type Digit = "0" | NonZeroDigit;
 
+/** Double digits */
 type DoubleDigit = `${NonZeroDigit}${Digit}`;
 
-type FlowValue = "Not Applicable" | "No Delay" | "1 minute" | `${PluralDigit | DoubleDigit} minutes`;
+/** 
+ * Flow values
+ * * `"Not Applicable"`
+ * * `"No Delay"`
+ * * X `minute`(`s`). Matches regex 
+ * ```typescript
+ * /^\d{1,2} ((minute)|(hour))s?$/
+ * ```
+ */
+export type FlowValue = "Not Applicable" | "No Delay" | `1 ${"hour" | "minute"}` | `${PluralDigit | DoubleDigit} ${"minutes" | "hours"}`;
 
+/**
+ * Canada border crossing times
+ */
 interface CanadaBorderCrossingTimes {
+    /** Canada Border Services Agency (CBSA) office */
     CbsaOffice: string;
+    /** Commercial Flow */
     CommercialFlow: string;
+    /** 
+     * Travellers Flow
+     * Node: The name of this property uses the Canadian spelling. 
+     * The double "l"s are intentional.
+     */
     TravellersFlow: string;
     Updated: Date;
 }
 
-type TimeZone = `${"A" | "C" | "E" | "M" | "P"}${"D" | "S"}T`;
+export type { CanadaBorderCrossingTimes }
+
+export type TimeZone = `${"A" | "C" | "E" | "M" | "P"}${"D" | "S"}T`;
 
 function getTimeZone(dateTime: string) {
     const timeZoneRe = /[ACEMP][DS]T/ig;
@@ -47,7 +76,7 @@ function extractDataFromCell(cell: HTMLTableCellElement, cellId: number) {
 
 /**
  * Finds the table and extracts its rows into objects.
- * @param markup HTML markup string.
+ * @param markup - HTML markup string.
  * @returns 
  */
 export function convertTableToObjects(markup: string | Document | HTMLTableElement) {
@@ -104,7 +133,7 @@ export function convertTableToObjects(markup: string | Document | HTMLTableEleme
 
 /**
  * Finds the table and extracts its rows into objects.
- * @param markup HTML markup string.
+ * @param markup - HTML markup string.
  * @returns 
  */
 export function convertTableToObjectsCheerio(markup: string): CanadaBorderCrossingTimes[] {
@@ -174,7 +203,7 @@ export function parseCanadaBorderInfo(markup: string) {
  * Times for the Pacific time zone.
  */
 export async function getCanadaBorderInfo() {
-    const canPageResponse = await fetch(url);
+    const canPageResponse = await fetch(defaultUrl);
     const markup = await canPageResponse.text();
     return parseCanadaBorderInfo(markup);
 }

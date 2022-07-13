@@ -1,3 +1,14 @@
 # Custom Dictionary Words
 Cbsa
+Houlton
+Lynden
+Madawaska
+Massena
+Ogdensburg
+Pembina
+RFID
+sentri
+SENTRI
+Sumas
 Travellers
+tsdoc

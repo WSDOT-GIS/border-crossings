@@ -17,10 +17,18 @@
     "@types/node": "^18.0.3",
     "@typescript-eslint/eslint-plugin": "^5.30.6",
     "@typescript-eslint/parser": "^5.30.6",
-    "eslint": "^8.19.0"
+    "cspell": "^6.2.3",
+    "eslint": "^8.19.0",
+    "eslint-plugin-tsdoc": "^0.2.16",
+    "typedoc": "^0.23.7"
   },
   "scripts": {
     "prepare": "tsc",
+    "lint": "eslint .",
+    "docs": "typedoc",
+    "docs:watch": "typedoc --watch",
+    "serve-docs": "dotnet-serve --directory docs -oqSzbc",
+    "build-and-serve-docs": "npm run-script docs && npm run-script serve-docs",
     "watch": "tsc -w",
     "test": "npm run test:format && npm run test:us && npm run test:canada",
     "test:us": "node test.mjs",

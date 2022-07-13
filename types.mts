@@ -1,16 +1,40 @@
+/**
+ * Defines types used by the other modules.
+ */
+
+/** 
+ * The value used by the API to show that a property is not applicable in that context. 
+ */
 type NA = "N/A";
 
+/** The valid values for border types. */
 export type Border = `${"Canadian" | "Mexican"} Border`;
+/** Port status */
 export type PortStatus = "Open" | string;
+/** How the API represents boolean values: `0` for `false`, `1` for `true`. */
 export type BooleanAsString = "0" | "1";
+/** Automation types */
 export type AutomationType = "Manual" | "Bluetooth" | "RFID" | string;
+/** This type can accept {@link NA} as a valid value */
 type CanBeNA<T> = NA | T;
+/** Operation status */
 export type OperationalStatus = CanBeNA<string> | "no delay" | "delay" | "Update Pending" | "Lanes Closed";
+/** This type can be null */
 type Nullable<T> = T | null;
+/** Valid values for hours */
 type HourNumbers = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11;
+/** Valid time values */
 type Times = `${HourNumbers} ${"a" | "p"}m` | "Midnight";
+/** Valid hours values */
 export type Hours = '24 hrs/day' | `${Times}-${Times}`;
+/** 
+ * Port names. Also excepts any other string in case this type 
+ * definition missed some or new ones are added later.
+ */
 export type PortName = "Alexandria Bay" | "Alexandria Bay, NY" | "Blaine" | "Buffalo/Niagara Falls" | "Calais" | "Champlain" | "Derby Line" | "Detroit" | "Highgate Springs" | "Houlton" | "International Falls" | "Jackman" | "Lynden" | "Madawaska" | "Massena" | "Norton" | "Ogdensburg" | "Pembina" | "Port Huron" | "Sault Ste. Marie" | "Sumas" | "Sweetgrass" | string;
+/**
+ * Expected crossing names. Other strings are also valid.
+ */
 export type CrossingName = "Ambassador Bridge" | "Bluewater Bridge" | "Derby Line I-91" | "Ferry Point" | "International Avenue" | "International Bridge - SSM" | "Lewiston Bridge" | "Milltown" | "Pacific Highway" | "Peace Arch" | "Peace Bridge" | "Point Roberts" | "Rainbow Bridge" | "Thousand Islands Bridge" | "Whirlpool Bridge" | "Windsor Tunnel" | string | null;
 
 interface LanesCommon {
@@ -126,12 +150,21 @@ interface BorderCrossingRaw extends BorderCrossingCommon {
     automation_enabled: BooleanAsString;
 }
 
+/**
+ * Represents a border crossing
+ */
 interface BorderCrossing extends BorderCrossingCommon {
+    /** Date */
     date: Date;
+    /** Commercial vehicle lanes */
     commercial_vehicle_lanes: CommercialVehicleLanes;
+    /** Passenger vehicle lanes */
     passenger_vehicle_lanes: PassengerVehicleLanes;
+    /** pedestrian lanes */
     pedestrian_lanes: PedestrianLanes;
+    /** Has automation? */
     automation: boolean;
+    /** Is automation enabled? */
     automation_enabled: boolean;
 }
 

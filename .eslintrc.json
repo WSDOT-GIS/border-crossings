@@ -1,9 +1,15 @@
 {
+    "root": true,
     "env": {
         "browser": true,
         "es2021": true,
         "node": true
     },
+    "ignorePatterns": [
+        "docs",
+        "**/*.mjs",
+        "**/*.d.mts"
+    ],
     "extends": [
         "eslint:recommended",
         "plugin:@typescript-eslint/recommended"
@@ -14,8 +20,10 @@
         "sourceType": "module"
     },
     "plugins": [
+        "eslint-plugin-tsdoc",
         "@typescript-eslint"
     ],
     "rules": {
+        "tsdoc/syntax": "warn"
     }
 }

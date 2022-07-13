@@ -1,0 +1,8 @@
+{
+    "$schema": "https://typedoc.org/schema.json",
+    "cleanOutputDir": true,
+    "preserveWatchOutput": true,
+    "entryPoints": [
+        "index.mts"
+    ]
+}

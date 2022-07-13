@@ -1,13 +1,14 @@
 /**
  * This module is for calling the API used by the U.S. Customs and Border Protection (CBP) "Advisories and Wait Times" website.
- * @module
- * @see {@link https://www.cbp.gov/travel/advisories-wait-times}
- * @see {@link https://www.cbp.gov}
+ * @see [US Customs and Border Protection (CBP), "Advisories and Wait Times"](https://www.cbp.gov/travel/advisories-wait-times)
+ * @see [US Customs and Border Protection (CBP)](https://www.cbp.gov)
  */
 
 import FormatError from "./FormatError.mjs";
 import { BorderCrossing } from "./types.mjs";
 export { getCanadaBorderInfo } from "./Canada.mjs"
+export type { FlowValue as CanadaFlowValue, TimeZone as CanadaTimeZone } from "./Canada.mjs"
+
 
 export { FormatError };
 
@@ -24,9 +25,8 @@ export const CrossingTypes = {
 } as const;
 
 export const waPorts = [3010, 3005, 3004, 3014, 3023, 2905, 3019, 3001, 3009, 3002];
-export const waPortsRe = new RegExp(`(?<prefix>\\d{2})(?<poe>${
-  waPorts.map(p => `(?:${p})`).join("|")
-})(?<suffix>\\d{2})`);
+export const waPortsRe = new RegExp(`(?<prefix>\\d{2})(?<poe>${waPorts.map(p => `(?:${p})`).join("|")
+  })(?<suffix>\\d{2})`);
 
 export type IdPartStrings = [prefix: string, portOfEntryId: string, suffix: string];
 export type IdPartIntegers = [prefix: number, portOfEntryId: number, suffix: number];
@@ -34,13 +34,13 @@ export type IdParts = IdPartStrings | IdPartIntegers;
 
 /**
  * Verifies that the input ID consists of between seven and eight digits.
- * @param id A Border Crossings Wait-times (BWT) ID.
- * @param assumeWaIfTooShort If the input string is only six digits long,
+ * @param id - A Border Crossings Wait-times (BWT) ID.
+ * @param assumeWaIfTooShort - If the input string is only six digits long,
  * if this value is true then the WA prefix of "02" will be added to the 
  * beginning of the input string.
  * @returns Returns the input string, 
  * padded to eight digits if the input only had seven.
- * @throws {FormatError} Thrown if the input string:
+ * @throws {@link FormatError} Thrown if the input string:
  * - !assumeWaIfTooShort: does not consist between seven and eight digits.
  * - assumeWaIfTooShort: does not consist of between six and eight digits.
  */
@@ -67,11 +67,11 @@ function verifyStringInput(id: string, assumeWaIfTooShort?: boolean): string {
 
 /**
  * Splits an ID into its three component parts.
- * @param bwtId Full border wat times ID as either a string or integer
- * @param outputType Optionally specify output type. 
+ * @param bwtId - Full border wat times ID as either a string or integer
+ * @param outputType - Optionally specify output type.
  * If omitted, the output will be an array of values of the same type as the input.
  * @returns An array of three elements: either all string or all number type.
- * @throws {FormatError} Thrown if the input string does not
+ * @throws {@link FormatError} Thrown if the input string does not
  * consist between seven and eight digits.
  */
 export function getIdParts(bwtId: string, outputType?: "string", assumeWaIfTooShort?: boolean): IdPartStrings
@@ -112,9 +112,9 @@ export function getIdParts(bwtId: string | number, outputType?: "string" | "numb
 
 /**
  * Generates a Border Wait Times page URL for the given Port of Entry and Crossing Type webpage.
- * @param portOfEntryId Identifier for a Port of Entry.
- * @param crossingType Specifies a crossing type. (Pedestrian is not used in WA.)
- * @param bwtWebsiteUrl Override the base URL of https://bwt.cbp.gov.
+ * @param portOfEntryId - Identifier for a Port of Entry.
+ * @param crossingType - Specifies a crossing type. (Pedestrian is not used in WA.)
+ * @param bwtWebsiteUrl - Override the base URL of https://bwt.cbp.gov.
  * @returns A URL for a Border Wait Times page.
  */
 export function createWaitTimesPageUrl(portOfEntryId: string, crossingType: CrossingType, bwtWebsiteUrl: string = defaultBwtWebsiteUrl) {
@@ -124,8 +124,8 @@ export function createWaitTimesPageUrl(portOfEntryId: string, crossingType: Cros
 
 /**
  * Parses a string into a date
- * @param dateString A string representing a date in m/d/y format. (E.g., "6/29/2022")
- * @param timeString A string representing a time, with hours, minutes, and seconds separated by ":".
+ * @param dateString - A string representing a date in m/d/y format. (E.g., "6/29/2022")
+ * @param timeString - A string representing a time, with hours, minutes, and seconds separated by ":".
  * @returns A Date object.
  */
 function getDateFromString(dateString: string, timeString?: string): Date {
@@ -140,10 +140,10 @@ function getDateFromString(dateString: string, timeString?: string): Date {
 }
 
 /**
- * This funciton is used by JSON.parse to customize JSON parsing.
- * @param this The current object being deserialized by JSON parser.
- * @param key The name of the current property
- * @param value The current value
+ * This function is used by JSON.parse to customize JSON parsing.
+ * @param this - The current object being deserialized by JSON parser.
+ * @param key - The name of the current property
+ * @param value - The current value
  * @returns Returns the converted version of value param
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -175,7 +175,7 @@ function customizeBorderCrossingJson(this: any, key: string, value: any): any {
 
 /**
  * Gets US border crossing info
- * @param url Override default URL for US Government border crossings.
+ * @param url - Override default URL for US Government border crossings.
  * @returns An array of border crossing objects.
  */
 export async function getCurrentBorderCrossingInfo(url = defaultUrl) {
@@ -196,8 +196,8 @@ export async function getCurrentBorderCrossingInfo(url = defaultUrl) {
 /**
  * Enumerates through a collection of BorderCrossings, 
  * optionally filtering out non-WA items.
- * @param crossings A collection of {@link: BorderCrossing} objects.
- * @param waOnly Set to true to omit non-WA items.
+ * @param crossings - A collection of {@link BorderCrossing} objects.
+ * @param waOnly - Set to true to omit non-WA items.
  */
 export function* enumerateBorderCrossingInfos(crossings: Iterable<BorderCrossing>, waOnly = true) {
   for (const crossing of crossings) {
