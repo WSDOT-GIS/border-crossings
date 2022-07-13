@@ -159,7 +159,7 @@ export function convertTableToObjectsCheerio(markup: string): CanadaBorderCrossi
     return output;
 }
 
-export function parseCanadataBorderInfo(markup: string) {
+export function parseCanadaBorderInfo(markup: string) {
     if (typeof DOMParser !== "undefined") {
         return convertTableToObjects(markup);
     } else {
@@ -169,14 +169,14 @@ export function parseCanadataBorderInfo(markup: string) {
 
 
 /**
- * Gets Canadian Border Crossing Times from Canadan government website.
+ * Gets Canadian Border Crossing Times from Canadian government website.
  * @returns Returns an array of Canadian Border Crossing 
  * Times for the Pacific time zone.
  */
 export async function getCanadaBorderInfo() {
     const canPageResponse = await fetch(url);
     const markup = await canPageResponse.text();
-    return parseCanadataBorderInfo(markup);
+    return parseCanadaBorderInfo(markup);
 }
 
 

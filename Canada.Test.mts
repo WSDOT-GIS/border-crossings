@@ -1,4 +1,4 @@
-import { parseCanadataBorderInfo } from "./Canada.mjs";
+import { parseCanadaBorderInfo } from "./Canada.mjs";
 import assert from "assert/strict";
 import { readFile } from "fs/promises"
 import { constants } from "fs"
@@ -12,7 +12,7 @@ const markup = await readFile(htmlFile, {
     flag: constants.O_RDONLY
 })
 
-const borderInfos = parseCanadataBorderInfo(markup);
+const borderInfos = parseCanadaBorderInfo(markup);
 assert(borderInfos, "There should be at least one border info object returned.");
 for (const bi of borderInfos) {
     assert.ok(bi.CbsaOffice, "CBSA office value provided");
