@@ -2,7 +2,11 @@
     "$schema": "https://typedoc.org/schema.json",
     "cleanOutputDir": true,
     "preserveWatchOutput": true,
+    "htmlLang": "en",
     "entryPoints": [
-        "index.mts"
+        "index.mts",
+        "Canada.mts",
+        "types.mts",
+        "FormatError.mts"
     ]
 }

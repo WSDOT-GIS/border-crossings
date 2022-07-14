@@ -5,7 +5,7 @@
 /** 
  * The value used by the API to show that a property is not applicable in that context. 
  */
-type NA = "N/A";
+export type NA = "N/A";
 
 /** The valid values for border types. */
 export type Border = `${"Canadian" | "Mexican"} Border`;
@@ -16,15 +16,15 @@ export type BooleanAsString = "0" | "1";
 /** Automation types */
 export type AutomationType = "Manual" | "Bluetooth" | "RFID" | string;
 /** This type can accept {@link NA} as a valid value */
-type CanBeNA<T> = NA | T;
+export type CanBeNA<T> = NA | T;
 /** Operation status */
 export type OperationalStatus = CanBeNA<string> | "no delay" | "delay" | "Update Pending" | "Lanes Closed";
 /** This type can be null */
-type Nullable<T> = T | null;
+export type Nullable<T> = T | null;
 /** Valid values for hours */
-type HourNumbers = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11;
+export type HourNumbers = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11;
 /** Valid time values */
-type Times = `${HourNumbers} ${"a" | "p"}m` | "Midnight";
+export type Times = `${HourNumbers} ${"a" | "p"}m` | "Midnight";
 /** Valid hours values */
 export type Hours = '24 hrs/day' | `${Times}-${Times}`;
 /** 

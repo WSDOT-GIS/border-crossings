@@ -1,17 +1,31 @@
 /**
- * An extension of {@link Error} for use when the input
+ * This module defines the {@link FormatError} class.
+ * @packageDocumentation
+ */
+
+/**
+ * An extension of {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error | Error} for use when the input
  * to a function is not in the expected format.
  */
-export default class FormatError extends Error {
+export class FormatError extends Error {
+    /**
+     * 
+     * @param value - The string value that was not in the expected format.
+     * @param expectedFormat - A string or regular expression that describes the
+     * format that was expected.
+     */
     constructor(
+        /** The string value that was not in the expected format. */
         public readonly value: string,
-        public readonly expectedFormat?: string | RegExp,
-        message?: string,
-        errorOptions?: ErrorOptions
+        /** 
+         * A string or regular expression that describes the
+         * format that was expected.
+         */
+        public readonly expectedFormat?: string | RegExp
     ) {
-        if (!message && expectedFormat) {
-            message = `${value} does not match the expected format: ${expectedFormat}`;
-        }
-        super(message, errorOptions);
+        const message = `${value} does not match the expected format: ${expectedFormat}`;
+        super(message);
     }
 }
+
+export default FormatError;

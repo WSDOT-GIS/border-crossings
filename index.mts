@@ -2,35 +2,48 @@
  * This module is for calling the API used by the U.S. Customs and Border Protection (CBP) "Advisories and Wait Times" website.
  * @see [US Customs and Border Protection (CBP), "Advisories and Wait Times"](https://www.cbp.gov/travel/advisories-wait-times)
  * @see [US Customs and Border Protection (CBP)](https://www.cbp.gov)
+ * @packageDocumentation
  */
 
 import FormatError from "./FormatError.mjs";
 import { BorderCrossing } from "./types.mjs";
-export { getCanadaBorderInfo } from "./Canada.mjs"
+export { getCanadaBorderInfo, parseCanadaBorderInfo } from "./Canada.mjs"
 export type { FlowValue as CanadaFlowValue, TimeZone as CanadaTimeZone } from "./Canada.mjs"
 
 
 export { FormatError };
 
-const defaultBwtWebsiteUrl = "https://bwt.cbp.gov";
-const defaultApiUrl = `${defaultBwtWebsiteUrl}/api`;
-const defaultUrl = `${defaultApiUrl}/bwtnew`;
+export const defaultBwtWebsiteUrl = "https://bwt.cbp.gov";
+export const defaultApiUrl = `${defaultBwtWebsiteUrl}/api`;
+export const defaultUrl = `${defaultApiUrl}/bwtnew`;
 
-type CrossingType = "POV" | "COV" | "PED";
+/** Crossing type string */
+export type CrossingType = "POV" | "COV" | "PED";
 
+/** 
+ * An enumeration of valid {@link CrossingType} values 
+ */
 export const CrossingTypes = {
   Passenger: "POV",
   Commercial: "COV",
   Pedestrian: "PED"
 } as const;
 
+/** Known WA ports */
 export const waPorts = [3010, 3005, 3004, 3014, 3023, 2905, 3019, 3001, 3009, 3002];
+/** A regular expression that matches a string containing a {@link waPorts} value. */
 export const waPortsRe = new RegExp(`(?<prefix>\\d{2})(?<poe>${waPorts.map(p => `(?:${p})`).join("|")
   })(?<suffix>\\d{2})`);
 
-export type IdPartStrings = [prefix: string, portOfEntryId: string, suffix: string];
-export type IdPartIntegers = [prefix: number, portOfEntryId: number, suffix: number];
-export type IdParts = IdPartStrings | IdPartIntegers;
+
+/** 
+ * An array of three values that are the parts of a full ID string 
+ */
+export type IdParts<T extends string | number> = [prefix: T, portOfEntryId: T, suffix: T];
+/** An array of three strings that are the parts of a full ID string */
+type IdPartStrings = IdParts<string>;
+/** An array of three integers that are the parts of a full ID string */
+type IdPartIntegers = IdParts<number>;
 
 /**
  * Verifies that the input ID consists of between seven and eight digits.
@@ -65,20 +78,22 @@ function verifyStringInput(id: string, assumeWaIfTooShort?: boolean): string {
   return id;
 }
 
+type IdPartsOutputType = "string" | "number";
+export function getIdParts(bwtId: string, outputType?: "string", assumeWaIfTooShort?: boolean): IdParts<string>
+export function getIdParts(bwtId: number, outputType?: "number", assumeWaIfTooShort?: boolean): IdParts<number>
+export function getIdParts(bwtId: string, outputType: "number", assumeWaIfTooShort?: boolean): IdParts<number>
+export function getIdParts(bwtId: number, outputType: "string", assumeWaIfTooShort?: boolean): IdParts<string>
 /**
  * Splits an ID into its three component parts.
- * @param bwtId - Full border wat times ID as either a string or integer
+ * @param bwtId - Full border wait times ID as either a string or integer
  * @param outputType - Optionally specify output type.
+ * @param assumeWaIfTooShort - If the bwId is too short, assume that it is an ID for WA.
  * If omitted, the output will be an array of values of the same type as the input.
  * @returns An array of three elements: either all string or all number type.
  * @throws {@link FormatError} Thrown if the input string does not
  * consist between seven and eight digits.
  */
-export function getIdParts(bwtId: string, outputType?: "string", assumeWaIfTooShort?: boolean): IdPartStrings
-export function getIdParts(bwtId: number, outputType?: "number", assumeWaIfTooShort?: boolean): IdPartIntegers
-export function getIdParts(bwtId: string, outputType: "number", assumeWaIfTooShort?: boolean): IdPartIntegers
-export function getIdParts(bwtId: number, outputType: "string", assumeWaIfTooShort?: boolean): IdPartStrings
-export function getIdParts(bwtId: string | number, outputType?: "string" | "number", assumeWaIfTooShort?: boolean) {
+export function getIdParts(bwtId: string | number, outputType?: IdPartsOutputType, assumeWaIfTooShort?: boolean): IdParts<string | number> {
 
   if (typeof bwtId === "string") {
     bwtId = verifyStringInput(bwtId, assumeWaIfTooShort);

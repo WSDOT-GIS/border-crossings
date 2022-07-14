@@ -3,9 +3,22 @@
  * (Canada into US) from the 
  * {@link https://www.cbsa-asfc.gc.ca/bwt-taf/menu-eng.html | Canada Border Services Agency (CBSA) website, "Border wait times: United States to Canada"}.
  * @see {@link https://www.cbsa-asfc.gc.ca/menu-eng.html | Canada Border Services Agency (CBSA)}
+ * @packageDocumentation
  */
 
-import { load } from "cheerio";
+
+import type { AnyNode, CheerioOptions, CheerioAPI } from "cheerio"
+
+type CheerioLoadFunction = (content: string | AnyNode | AnyNode[] | Buffer, options?: CheerioOptions | null | undefined, isDocument?: boolean) => CheerioAPI;
+
+let load: undefined | (CheerioLoadFunction);
+
+// Load "cheerio" module only if DOMParser is not present.
+if (typeof DOMParser === "undefined") {
+    // import { load } from "cheerio";
+    load = (await (import("cheerio"))).load;
+}
+
 import type { DataNode } from "domhandler";
 
 /**
@@ -14,14 +27,14 @@ import type { DataNode } from "domhandler";
 export const defaultUrl = new URL("https://www.cbsa-asfc.gc.ca/bwt-taf/menu-eng.html");
 
 /** Digits where type unit will be plural (e.g., `"minutes"`). */
-type PluralDigit = | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9";
+export type PluralDigit = | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9";
 /** Digits that are not `"0"`. */
-type NonZeroDigit = "1" | PluralDigit;
+export type NonZeroDigit = "1" | PluralDigit;
 /** Any digit, 0 through 9 */
-type Digit = "0" | NonZeroDigit;
+export type Digit = "0" | NonZeroDigit;
 
 /** Double digits */
-type DoubleDigit = `${NonZeroDigit}${Digit}`;
+export type DoubleDigit = `${NonZeroDigit}${Digit}`;
 
 /** 
  * Flow values
@@ -53,14 +66,36 @@ interface CanadaBorderCrossingTimes {
 
 export type { CanadaBorderCrossingTimes }
 
+/** A time zone string */
 export type TimeZone = `${"A" | "C" | "E" | "M" | "P"}${"D" | "S"}T`;
 
+/**
+ * Extracts the time zone portion of a date time string.
+ * @param dateTime - A date/time string extracted from HTML table.
+ */
 function getTimeZone(dateTime: string) {
     const timeZoneRe = /[ACEMP][DS]T/ig;
     const match = dateTime.match(timeZoneRe);
     return match?.at(0)?.toUpperCase() as TimeZone || null;
 }
 
+/**
+ * A tuple array containing the following:
+ * 
+ * 0. date: {@link Date}
+ * 1. timeZone: {@link TimeZone} or {@link null}
+ */
+export type DateAndTimeZoneTuple = [date: Date, timeZone: TimeZone | null];
+
+/**
+ * Extracts data from a table cell.
+ * @param cell - HTML table cell
+ * @param cellId - The index of the cell in relation to its siblings.
+ * @returns One of the following:
+ * * A {@link string}
+ * * An array: {@link DateAndTimeZoneTuple}
+ * * null
+ */
 function extractDataFromCell(cell: HTMLTableCellElement, cellId: number) {
     if (cellId === 0) {
         return (Array.from(cell.children, (element) => element.textContent).filter(e => e !== null) as string[]).join("\n");
@@ -69,7 +104,8 @@ function extractDataFromCell(cell: HTMLTableCellElement, cellId: number) {
         const timeElement = cell.querySelector("time");
         const timeString = timeElement?.textContent;
         const timeZone = timeString ? getTimeZone(timeString) : null;
-        return timeElement ? [new Date(timeElement?.dateTime), timeZone] : null;
+
+        return timeElement ? [new Date(timeElement?.dateTime), timeZone] as DateAndTimeZoneTuple : null;
     }
     return cell.textContent as FlowValue;
 }
@@ -77,9 +113,9 @@ function extractDataFromCell(cell: HTMLTableCellElement, cellId: number) {
 /**
  * Finds the table and extracts its rows into objects.
  * @param markup - HTML markup string.
- * @returns 
+ * @returns An array of Canada Border Crossing Time objects.
  */
-export function convertTableToObjects(markup: string | Document | HTMLTableElement) {
+function convertTableToObjects(markup: string | Document | HTMLTableElement) {
     let table: HTMLTableElement | null;
     if (markup instanceof HTMLTableElement) {
         table = markup;
@@ -132,11 +168,19 @@ export function convertTableToObjects(markup: string | Document | HTMLTableEleme
 }
 
 /**
- * Finds the table and extracts its rows into objects.
+ * Finds the table and extracts its rows into objects using the
+ * cherrio package.
+ * 
+ * @remarks Use this when {@link DOMParser} is not available.
+ * Developed for use with Postman tool.
+ * 
  * @param markup - HTML markup string.
- * @returns 
+ * @returns An array of Canada Border Crossing Time objects.
  */
-export function convertTableToObjectsCheerio(markup: string): CanadaBorderCrossingTimes[] {
+function convertTableToObjectsCheerio(markup: string): CanadaBorderCrossingTimes[] {
+    if (!load) {
+        throw new ReferenceError("The cheerio.load function is not defined. Have you imported the optional 'cheerio' module?");
+    }
     const document = load(markup, undefined, true);
     const rows = document("body > main > table#bwttaf > tbody > tr");
 
@@ -188,6 +232,11 @@ export function convertTableToObjectsCheerio(markup: string): CanadaBorderCrossi
     return output;
 }
 
+/**
+ * Finds the table and extracts its rows into objects.
+ * @param markup - HTML markup string.
+ * @returns An array of Canada Border Crossing Time objects.
+ */
 export function parseCanadaBorderInfo(markup: string) {
     if (typeof DOMParser !== "undefined") {
         return convertTableToObjects(markup);

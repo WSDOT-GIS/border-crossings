@@ -1,12 +1,15 @@
 {
   "name": "crossings",
   "version": "1.0.0",
-  "description": "",
+  "description": "This package is for calling the API used by the [U.S. Customs and Border Protection (CBP) \"Advisories and Wait Times\"][Advisories and Wait Times] website.",
   "main": "index.mjs",
   "types": "index.d.mjs",
   "files": [
+    "docs",
     "**/index.mjs",
     "**/index.d.mts",
+    "**/FormatError.mjs",
+    "**/FormatError.d.mts",
     "**/types.mjs",
     "**/types.d.mts",
     "**/Canada.mjs",
@@ -14,7 +17,6 @@
   ],
   "type": "module",
   "devDependencies": {
-    "@types/node": "^18.0.3",
     "@typescript-eslint/eslint-plugin": "^5.30.6",
     "@typescript-eslint/parser": "^5.30.6",
     "cspell": "^6.2.3",
@@ -23,8 +25,10 @@
     "typedoc": "^0.23.7"
   },
   "scripts": {
-    "prepare": "tsc",
+    "prepare": "npm run build && npm run docs",
+    "build": "tsc",
     "lint": "eslint .",
+    "pack-dry-run": "npm pack --dry-run",
     "docs": "typedoc",
     "docs:watch": "typedoc --watch",
     "serve-docs": "dotnet-serve --directory docs -oqSzbc",
@@ -35,10 +39,6 @@
     "test:canada": "node Canada.Test.mjs",
     "test:format": "node FormatTest.mjs"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://WSDOT@dev.azure.com/WSDOT/TravelerInformation/_git/TravelerInformationCoreMap"
-  },
   "keywords": [
     "border",
     "canada",
@@ -47,7 +47,18 @@
   ],
   "author": "Jeff Jacobson",
   "license": "Unlicense",
-  "dependencies": {
+  "optionalDependencies": {
     "cheerio": "^1.0.0-rc.12"
-  }
+  },
+  "directories": {
+    "doc": "docs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WSDOT-GIS/border-crossings.git"
+  },
+  "bugs": {
+    "url": "https://github.com/WSDOT-GIS/border-crossings/issues"
+  },
+  "homepage": "https://github.com/WSDOT-GIS/border-crossings#readme"
 }

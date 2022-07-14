@@ -12,7 +12,7 @@ This file defines a [Web Worker][Using Web Workers] that will call the API perio
 /**
  * Web worker that calls the US Border Crossing times API
  * @see [external link](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers)
- * @module
+ * @packageDocumentation
  */
 /// <reference lib="webworker"/>
 
