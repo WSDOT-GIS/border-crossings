@@ -1,6 +1,6 @@
 {
-  "name": "crossings",
-  "version": "1.0.0",
+  "name": "@wsdot/border-crossings",
+  "version": "0.0.1",
   "description": "This package is for calling the API used by the [U.S. Customs and Border Protection (CBP) \"Advisories and Wait Times\"][Advisories and Wait Times] website.",
   "main": "index.mjs",
   "types": "index.d.mjs",
