@@ -252,7 +252,7 @@ export function parseCanadaBorderInfo(markup: string) {
  * Times for the Pacific time zone.
  */
 export async function getCanadaBorderInfo() {
-    const canPageResponse = await fetch(defaultUrl);
+    const canPageResponse = await fetch(defaultUrl, { mode: "no-cors" });
     const markup = await canPageResponse.text();
     return parseCanadaBorderInfo(markup);
 }
