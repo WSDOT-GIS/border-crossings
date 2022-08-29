@@ -22,7 +22,7 @@
     "cspell": "^6.7.0",
     "eslint": "^8.22.0",
     "eslint-plugin-tsdoc": "^0.2.16",
-    "typedoc": "^0.23.10"
+    "typedoc": "^0.23.11"
   },
   "scripts": {
     "prepare": "npm run build && npm run docs",
