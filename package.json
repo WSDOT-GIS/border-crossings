@@ -21,7 +21,7 @@
     "@typescript-eslint/parser": "^5.33.1",
     "cspell": "^6.7.0",
     "eslint": "^8.25.0",
-    "eslint-plugin-tsdoc": "^0.2.16",
+    "eslint-plugin-tsdoc": "^0.2.17",
     "typedoc": "^0.23.10"
   },
   "scripts": {
