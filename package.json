@@ -19,7 +19,7 @@
   "devDependencies": {
     "@types/node": "^18.11.13",
     "@typescript-eslint/eslint-plugin": "^5.46.1",
-    "@typescript-eslint/parser": "^5.46.1",
+    "@typescript-eslint/parser": "^5.47.0",
     "cspell": "^6.17.0",
     "eslint": "^8.29.0",
     "eslint-plugin-tsdoc": "^0.2.17",
