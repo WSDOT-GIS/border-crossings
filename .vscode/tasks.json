@@ -1,0 +1,28 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "npm",
+			"script": "build-and-serve-docs",
+			"group": "build",
+			"problemMatcher": [],
+			"label": "Build and serve docs",
+			"icon": {
+				"id": "book",
+				"color": "terminal.ansiYellow"
+			},
+			"detail": "Generate the documentation and then serve the resulting HTML content."
+		},
+		{
+			"type": "npm",
+			"script": "serve-docs",
+			"icon": {
+				"id": "book",
+				"color": "terminal.ansiGreen"
+			},
+			"problemMatcher": [],
+			"label": "Serve docs",
+			"detail": "Serves the documentation that has already been generated."
+		}
+	]
+}
