@@ -1,5 +1,13 @@
 # US Border Crossings
 
+[![Node.js CI][CI Badge]][CI] [![CodeQL][CodeQL Badge]][CodeQL]
+
+[CI Badge]:https://github.com/WSDOT-GIS/border-crossings/actions/workflows/node.js.yml/badge.svg
+[CI]:https://github.com/WSDOT-GIS/border-crossings/actions/workflows/node.js.yml
+
+[CodeQL Badge]:https://github.com/WSDOT-GIS/border-crossings/actions/workflows/codeql-analysis.yml/badge.svg
+[CodeQL]:https://github.com/WSDOT-GIS/border-crossings/actions/workflows/codeql-analysis.yml
+
 This package is for calling the API used by the [U.S. Customs and Border Protection (CBP) "Advisories and Wait Times"][Advisories and Wait Times] website.
 
 Some examples are provided below to demonstrate how to use this package.
@@ -78,7 +86,6 @@ borderWorker.addEventListener("error", (errorEvent) => {
 //#endregion
 ```
 
-[U.S. Customs and Border Protection]:https://www.cbp.gov
 [Advisories and Wait Times]:https://www.cbp.gov/travel/advisories-wait-times
 [Using Web Workers]:https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers
 
