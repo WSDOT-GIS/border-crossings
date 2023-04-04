@@ -199,5 +199,6 @@ $RECYCLE.BIN/
 
 **/*.mjs
 **/*.d.mts
+**/*.map
 
 docs/

@@ -3,6 +3,19 @@
 	"tasks": [
 		{
 			"type": "npm",
+			"script": "build",
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"problemMatcher": [
+				"$tsc"
+			],
+			"label": "npm: build",
+			"detail": "tsc"
+		},
+		{
+			"type": "npm",
 			"script": "build-and-serve-docs",
 			"group": "build",
 			"problemMatcher": [],
@@ -23,6 +36,17 @@
 			"problemMatcher": [],
 			"label": "Serve docs",
 			"detail": "Serves the documentation that has already been generated."
+		},
+		{
+			"type": "npm",
+			"script": "test",
+			"group": {
+				"kind": "test",
+				"isDefault": true
+			},
+			"problemMatcher": [],
+			"label": "npm: test",
+			"detail": "c8 node test.mjs Canada.Test.mjs FormatTest.mjs"
 		}
 	]
 }
