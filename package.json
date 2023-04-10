@@ -22,7 +22,7 @@
     "@typescript-eslint/parser": "^5.57.1",
     "c8": "^7.13.0",
     "cspell": "^6.31.1",
-    "eslint": "^8.37.0",
+    "eslint": "^8.38.0",
     "eslint-plugin-tsdoc": "^0.2.17",
     "typedoc": "^0.23.28",
     "typescript": "^5.0.3"
