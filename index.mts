@@ -7,9 +7,11 @@
 
 import FormatError from "./FormatError.mjs";
 import { BorderCrossing } from "./types.mjs";
-export { getCanadaBorderInfo, parseCanadaBorderInfo } from "./Canada.mjs"
-export type { FlowValue as CanadaFlowValue, TimeZone as CanadaTimeZone } from "./Canada.mjs"
-
+export { getCanadaBorderInfo, parseCanadaBorderInfo } from "./Canada.mjs";
+export type {
+  FlowValue as CanadaFlowValue,
+  TimeZone as CanadaTimeZone,
+} from "./Canada.mjs";
 
 export { FormatError };
 
@@ -20,26 +22,34 @@ export const defaultUrl = `${defaultApiUrl}/bwtnew`;
 /** Crossing type string */
 export type CrossingType = "POV" | "COV" | "PED";
 
-/** 
- * An enumeration of valid {@link CrossingType} values 
+/**
+ * An enumeration of valid {@link CrossingType} values
  */
 export const CrossingTypes = {
   Passenger: "POV",
   Commercial: "COV",
-  Pedestrian: "PED"
+  Pedestrian: "PED",
 } as const;
 
 /** Known WA ports */
-export const waPorts = [3010, 3005, 3004, 3014, 3023, 2905, 3019, 3001, 3009, 3002];
+export const waPorts = [
+  3010, 3005, 3004, 3014, 3023, 2905, 3019, 3001, 3009, 3002,
+];
 /** A regular expression that matches a string containing a {@link waPorts} value. */
-export const waPortsRe = new RegExp(`(?<prefix>\\d{2})(?<poe>${waPorts.map(p => `(?:${p})`).join("|")
-  })(?<suffix>\\d{2})`);
+export const waPortsRe = new RegExp(
+  `(?<prefix>\\d{2})(?<poe>${waPorts
+    .map((p) => `(?:${p})`)
+    .join("|")})(?<suffix>\\d{2})`
+);
 
-
-/** 
- * An array of three values that are the parts of a full ID string 
+/**
+ * An array of three values that are the parts of a full ID string
  */
-export type IdParts<T extends string | number> = [prefix: T, portOfEntryId: T, suffix: T];
+export type IdParts<T extends string | number> = [
+  prefix: T,
+  portOfEntryId: T,
+  suffix: T
+];
 /** An array of three strings that are the parts of a full ID string */
 type IdPartStrings = IdParts<string>;
 /** An array of three integers that are the parts of a full ID string */
@@ -49,9 +59,9 @@ type IdPartIntegers = IdParts<number>;
  * Verifies that the input ID consists of between seven and eight digits.
  * @param id - A Border Crossings Wait-times (BWT) ID.
  * @param assumeWaIfTooShort - If the input string is only six digits long,
- * if this value is true then the WA prefix of "02" will be added to the 
+ * if this value is true then the WA prefix of "02" will be added to the
  * beginning of the input string.
- * @returns Returns the input string, 
+ * @returns Returns the input string,
  * padded to eight digits if the input only had seven.
  * @throws {@link FormatError} Thrown if the input string:
  * - !assumeWaIfTooShort: does not consist between seven and eight digits.
@@ -79,10 +89,26 @@ function verifyStringInput(id: string, assumeWaIfTooShort?: boolean): string {
 }
 
 type IdPartsOutputType = "string" | "number";
-export function getIdParts(bwtId: string, outputType?: "string", assumeWaIfTooShort?: boolean): IdParts<string>
-export function getIdParts(bwtId: number, outputType?: "number", assumeWaIfTooShort?: boolean): IdParts<number>
-export function getIdParts(bwtId: string, outputType: "number", assumeWaIfTooShort?: boolean): IdParts<number>
-export function getIdParts(bwtId: number, outputType: "string", assumeWaIfTooShort?: boolean): IdParts<string>
+export function getIdParts(
+  bwtId: string,
+  outputType?: "string",
+  assumeWaIfTooShort?: boolean
+): IdParts<string>;
+export function getIdParts(
+  bwtId: number,
+  outputType?: "number",
+  assumeWaIfTooShort?: boolean
+): IdParts<number>;
+export function getIdParts(
+  bwtId: string,
+  outputType: "number",
+  assumeWaIfTooShort?: boolean
+): IdParts<number>;
+export function getIdParts(
+  bwtId: number,
+  outputType: "string",
+  assumeWaIfTooShort?: boolean
+): IdParts<string>;
 /**
  * Splits an ID into its three component parts.
  * @param bwtId - Full border wait times ID as either a string or integer
@@ -93,34 +119,41 @@ export function getIdParts(bwtId: number, outputType: "string", assumeWaIfTooSho
  * @throws {@link FormatError} Thrown if the input string does not
  * consist between seven and eight digits.
  */
-export function getIdParts(bwtId: string | number, outputType?: IdPartsOutputType, assumeWaIfTooShort?: boolean): IdParts<string | number> {
-
+export function getIdParts(
+  bwtId: string | number,
+  outputType?: IdPartsOutputType,
+  assumeWaIfTooShort?: boolean
+): IdParts<string | number> {
   if (typeof bwtId === "string") {
     bwtId = verifyStringInput(bwtId, assumeWaIfTooShort);
     const prefix = bwtId.substring(0, 2);
     const portOfEntryId = bwtId.substring(2, 6);
     const suffix = bwtId.substring(6);
     const parts = [prefix, portOfEntryId, suffix];
-    return outputType === "number" ?
-      parts.map(part => {
-        return parseInt(part.replace(/^0{1,}/, ""), 10);
-      }) as IdPartIntegers
-      : parts as [string, string, string] as IdPartStrings;
-  }
-  else if (typeof bwtId === "number") {
+    return outputType === "number"
+      ? (parts.map((part) => {
+          return parseInt(part.replace(/^0{1,}/, ""), 10);
+        }) as IdPartIntegers)
+      : (parts as [string, string, string] as IdPartStrings);
+  } else if (typeof bwtId === "number") {
     const suffix = bwtId % 100;
     const portOfEntryId = ((bwtId - suffix) / 100) % 10_000;
-    const prefix = (((bwtId - suffix) / 100) - portOfEntryId) / 10_000;
+    const prefix = ((bwtId - suffix) / 100 - portOfEntryId) / 10_000;
     if (outputType !== "string") {
       return [prefix, portOfEntryId, suffix];
     } else {
-      const sPrefix = prefix.toLocaleString("en-US", { minimumFractionDigits: 2 });
-      const sPortOfEntryId = portOfEntryId.toLocaleString("en-US", { minimumFractionDigits: 4 });
-      const sSuffix = suffix.toLocaleString("en-US", { minimumIntegerDigits: 2 });
+      const sPrefix = prefix.toLocaleString("en-US", {
+        minimumFractionDigits: 2,
+      });
+      const sPortOfEntryId = portOfEntryId.toLocaleString("en-US", {
+        minimumFractionDigits: 4,
+      });
+      const sSuffix = suffix.toLocaleString("en-US", {
+        minimumIntegerDigits: 2,
+      });
       return [sPrefix, sPortOfEntryId, sSuffix];
     }
-  }
-  else {
+  } else {
     throw new TypeError("Unsupported input");
   }
 }
@@ -132,9 +165,18 @@ export function getIdParts(bwtId: string | number, outputType?: IdPartsOutputTyp
  * @param bwtWebsiteUrl - Override the base URL of https://bwt.cbp.gov.
  * @returns A URL for a Border Wait Times page.
  */
-export function createWaitTimesPageUrl(portOfEntryId: string, crossingType: CrossingType, bwtWebsiteUrl: string = defaultBwtWebsiteUrl) {
+export function createWaitTimesPageUrl(
+  portOfEntryId: string,
+  crossingType: CrossingType,
+  bwtWebsiteUrl: string = defaultBwtWebsiteUrl
+) {
   // Remove trailing slash from bwtWebsiteUrl if present, then join parts sparated by /.
-  return [bwtWebsiteUrl.replace(/\/$/g, ""), "details", portOfEntryId, crossingType].join("/");
+  return [
+    bwtWebsiteUrl.replace(/\/$/g, ""),
+    "details",
+    portOfEntryId,
+    crossingType,
+  ].join("/");
 }
 
 /**
@@ -148,9 +190,21 @@ function getDateFromString(dateString: string, timeString?: string): Date {
   // Month needs to be changed to zero-based because
   // JavaScript expects that for the month value and
   // ONLY the month value. JavaScript is stupid.
-  const [month, date, year] = dateString.split("/").map((n, i) => i === 0 ? parseInt(n) - 1 : parseInt(n)) as [month: number, date: number, year: number];
+  const [month, date, year] = dateString
+    .split("/")
+    .map((n, i) => (i === 0 ? parseInt(n) - 1 : parseInt(n))) as [
+    month: number,
+    date: number,
+    year: number
+  ];
   const dateParts: [number, number, number] = [year, month, date];
-  const timeParts = timeString ? timeString.split(":").map(value => parseInt(value)) as [hours: number, minutes: number, seconds: number] : [undefined, undefined, undefined];
+  const timeParts = timeString
+    ? (timeString.split(":").map((value) => parseInt(value)) as [
+        hours: number,
+        minutes: number,
+        seconds: number
+      ])
+    : [undefined, undefined, undefined];
   return new Date(Date.UTC(...dateParts, ...timeParts));
 }
 
@@ -175,7 +229,10 @@ function customizeBorderCrossingJson(this: any, key: string, value: any): any {
       return;
     }
     // Parse boolean value
-    if ((key === "automation" || key === "automation_enabled") && value in ["0", "1"]) {
+    if (
+      (key === "automation" || key === "automation_enabled") &&
+      value in ["0", "1"]
+    ) {
       return new Boolean(parseInt(value));
     }
     if (key === "delay_minutes" || key === "lanes_open") {
@@ -198,23 +255,29 @@ export async function getCurrentBorderCrossingInfo(url = defaultUrl) {
   myHeaders.append("Content-Type", "text/json");
 
   const requestOptions = {
-    method: 'GET',
-    headers: myHeaders
+    method: "GET",
+    headers: myHeaders,
   };
   const response = await fetch(url, requestOptions);
   const jsonText = await response.text();
-  const output: BorderCrossing[] = JSON.parse(jsonText, customizeBorderCrossingJson)
+  const output: BorderCrossing[] = JSON.parse(
+    jsonText,
+    customizeBorderCrossingJson
+  );
 
   return output;
 }
 
 /**
- * Enumerates through a collection of BorderCrossings, 
+ * Enumerates through a collection of BorderCrossings,
  * optionally filtering out non-WA items.
  * @param crossings - A collection of {@link BorderCrossing} objects.
  * @param waOnly - Set to true to omit non-WA items.
  */
-export function* enumerateBorderCrossingInfos(crossings: Iterable<BorderCrossing>, waOnly = true) {
+export function* enumerateBorderCrossingInfos(
+  crossings: Iterable<BorderCrossing>,
+  waOnly = true
+) {
   for (const crossing of crossings) {
     if (!waOnly || crossing.port_number.startsWith("30")) {
       yield crossing;
