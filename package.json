@@ -1,5 +1,16 @@
 {
-    "workspaces": [
-        "packages/border-crossings"
-    ]
+  "workspaces": [
+    "packages/border-crossings"
+  ],
+  "name": "border-crossings",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "devDependencies": {
+    "@biomejs/biome": "^2.5.6",
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.9.3"
+  }
 }
